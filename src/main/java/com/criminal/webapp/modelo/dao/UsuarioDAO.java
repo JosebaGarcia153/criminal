@@ -4,7 +4,7 @@ import com.criminal.webapp.modelo.pojo.Usuario;
 
 public interface UsuarioDAO {
 	/**
-	 * Comprueba si un usuario existe en la BBD
+	 * Comprueba si un usuario existe en la BBDD
 	 * @param nombre Nombre del usuario
 	 * @param password Contraseña del usuario
 	 * @return usuario encontrado
@@ -16,7 +16,7 @@ public interface UsuarioDAO {
 	 * Crea un usuario en la BBDD
 	 * @param usuario objeto creado en un controlador
 	 * @return usuario generado
-	 * @throws Exception Si la el usuario ya existe o los datos son incorrectos
+	 * @throws Exception Si el usuario ya existe o los datos son incorrectos
 	 * @see com.criminal.webapp.modelo.dao.impl.UsuarioDAOImpl
 	 */
 	Usuario crear(Usuario usuario) throws Exception;

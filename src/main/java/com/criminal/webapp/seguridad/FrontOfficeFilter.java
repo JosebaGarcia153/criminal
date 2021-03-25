@@ -53,7 +53,7 @@ public class FrontOfficeFilter implements Filter {
 		LOG.trace("filtrando " + req.getRequestURI());
 		
 		//Recuperar usuario de session
-		Usuario userLogin = (Usuario) req.getSession().getAttribute("user_login");
+		Usuario userLogin = (Usuario) req.getSession().getAttribute("usuario_login");
 		
 		if (userLogin == null) {
 			

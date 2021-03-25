@@ -2,14 +2,14 @@ package com.criminal.webapp.modelo.pojo;
 
 /**
  * Clase para generar instancias de rols
- * id guarda el ID del rol, si el ID es 1 es un usuario normal, si es 2 es un administrador
+ * id guarda el ID del rol, si el ID es 1 es un usuario normal, si es 51 (no 2 por motivos de seguridad) es un administrador
  * nombre guarda el nombre del rol
  * @see Rol
  *
  */
 public class Rol {
 	
-	public static final int ADMIN = 2;
+	public static final int ADMIN = 51;
 	public static final int USER = 1;
 	
 	private int id;

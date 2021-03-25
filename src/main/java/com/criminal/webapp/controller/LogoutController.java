@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Servlet encargado de terminar la sesion de un usuario.
- * @see com.games.webapp.listener.LoggedUserListener
+ * @see com.criminal.webapp.listener.UsuarioLogeadoListener
  */
 @WebServlet("/logout")
 public class LogoutController extends HttpServlet {
@@ -23,12 +23,12 @@ public class LogoutController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		session.invalidate(); // @see ListenerUsuarioLogeados => atributeRemoved
+		session.invalidate(); // @see UsuarioLogeadoListener => atributeRemoved
 		session = null;
 		
 		request.setAttribute("alert", new Alert("success", "Has cerrado tu sesión"));
 		
-		request.getRequestDispatcher("inicio").forward(request, response);
+		request.getRequestDispatcher("index.jsp").forward(request, response);
 	}
 
 	/**

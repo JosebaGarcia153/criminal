@@ -15,7 +15,7 @@ import com.criminal.webapp.modelo.pojo.Usuario;
 
 /**
  * Servlet encargado de recibir el nombre y contraseña insertados en login.jsp para logear a un usuario en la pagina web.
- * Si el logeo falla, vuelve una vez mas al la jsp, sino lo redirecciona al controlador del area del usuario o admin.
+ * Si el logeo falla, vuelve una vez mas al la jsp, sino lo redirecciona al controlador del area del usuario o administrador.
  */
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -31,8 +31,8 @@ public class LoginController extends HttpServlet {
 
 	/**
 	 * Recive el nombre y contraseña de login.jsp, y comprueba si son correctos para redireccionar o quedarse en el login.
-	 * @see GamesBackOfficeController com.games.webapp.controller.backoffice.GamesBackOfficeController
-	 * @see GamesFrontOfficeController com.games.webapp.controller.frontoffice.GamesFrontOfficeController
+	 * @see BackOfficeController com.games.webapp.controller.backoffice.BackOfficeController
+	 * @see FrontOfficeController com.games.webapp.controller.frontoffice.FrontOfficeController
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -54,7 +54,7 @@ public class LoginController extends HttpServlet {
 		} else {			
 			
 			session.setMaxInactiveInterval(60 * 1 * 20); //la sesion dura 20 minutos si inactivo
-			session.setAttribute("user_login", usuario); // @see ListenerUsuarioLogeados => attributeAdded
+			session.setAttribute("usuario_login", usuario); // @see UsuarioLogeadoListener => attributeAdded
 			
 			session.setAttribute("alert", new Alert("success", "Has iniciado sesión"));
 		
