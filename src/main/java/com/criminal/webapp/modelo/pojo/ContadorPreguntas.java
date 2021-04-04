@@ -4,26 +4,21 @@ package com.criminal.webapp.modelo.pojo;
  * Clase para contar las preguntas agregadas por un usuario y el numero de preguntas en total.
  * usuario_id guarda la ID del usuario.
  * total cuenta todos las preguntas
+ * aprobadas cuenta las preguntas aprobadas por un administrador
+ * pendientes cuenta las preguntas sin aprobar
  */
 public class ContadorPreguntas {
 	
-	private int user_id;
+	private int usuarioId;
 	private int total;
+	private int aprobadas;
+	private int pendientes;
 	
 	
 	public ContadorPreguntas() {
 		super();
 	}
 
-	
-	public int getUser_id() {
-		return user_id;
-	}
-	
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
-	}
-	
 	
 	public int getTotal() {
 		return total;
@@ -32,10 +27,38 @@ public class ContadorPreguntas {
 	public void setTotal(int total) {
 		this.total = total;
 	}
+	
+	
+	public int getUsuarioId() {
+		return usuarioId;
+	}
 
+	public void setUsuarioId(int usuarioId) {
+		this.usuarioId = usuarioId;
+	}
 
+	
+	public int getAprobadas() {
+		return aprobadas;
+	}
+
+	public void setAprobadas(int aprobadas) {
+		this.aprobadas = aprobadas;
+	}
+
+	
+	public int getPendientes() {
+		return pendientes;
+	}
+
+	public void setPendientes(int pendientes) {
+		this.pendientes = pendientes;
+	}
+
+	
 	@Override
 	public String toString() {
-		return "GameCount [user_id=" + user_id + ", total=" + total + "]";
+		return "ContadorPreguntas [usuarioId=" + usuarioId + ", total=" + total + ", aprobadas=" + aprobadas
+				+ ", pendientes=" + pendientes + "]";
 	}
 }

@@ -10,11 +10,18 @@ import com.criminal.webapp.modelo.dao.SecurityException;
 public interface PreguntaDAO extends Crudable<Pregunta> {
 	
 	/**
-	 * Busca todos las pregunas ingresados en la BBDD
+	 * Busca todos las pregunas ingresadas en la BBDD
 	 * @return preguntas Todas las entradas
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
 	ArrayList<Pregunta> conseguirTodas();
+	
+	/**
+	 * Busca todos las pregunas aprobadas ingresadas en la BBDD
+	 * @return preguntas Todas las entradas
+	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
+	 */
+	ArrayList<Pregunta> conseguirTodasAprobadas();
 	
 	/**
 	 * Busca todos las preguntas de una categoria
@@ -31,8 +38,17 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	 * @return preguntas Entradas encontradas
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
-	ArrayList<Pregunta> conseguirPorUsario(int usuarioId);
+	ArrayList<Pregunta> conseguirPorUsuario(int usuarioId);
 	
+	/**
+	 * Busca las preguntas agregadas a la BBDD por un usuario especifico en base a si han sido aprobadas
+	 * @param usuarioId Usuario que ha ingresado las preguntas
+	 * @param estaAprobada confirma si la pregunta ha sido aprobada
+	 * @return preguntas Entradas encontradas
+	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
+	 */
+	ArrayList<Pregunta> conseguirPorUsuario(int usuarioId, boolean estaAprobada);
+			
 	/**
 	 * Cuenta cuantas preguntas hay subidas en total
 	 * @return numero Objeto con datos contados
@@ -62,15 +78,29 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	/**
 	 * Edita una pregunta de la BBDD despues de comprobar que pertenezca al usuario intentando editarla o a un administrador
 	 * @param pregunta datos que modificar a la pregunta
+	 * @param usuarioId Usuario al que pertenece la pregunta
 	 * @return pregunta Datos de al pregunta modificada
 	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
 	 * @see com.criminal.webapp.modelo.dao.SecurityException
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
-	Pregunta actualizar(Pregunta pregunta, int userId) throws Exception, SecurityException;
+	Pregunta actualizar(Pregunta pregunta, int usuarioId) throws Exception, SecurityException;
 	
 	/**
-	 * Elimina una pregunta de la BBDD despues de comprobar que pertenezca al usuario intentando borrarla o a un administrador
+	 * Elimina una pregunta de la BBDD despues de comprobar que pertenezca al usuario intentando borrarla y no este aprobada
+	 * @param id ID de la pregunta a borrar
+	 * @param usuarioId Usuario al que pertenece la pregunta
+	 * @param fecha_aprobada mira si ha sido aprobada para evitar borrarla por un usuario normal
+	 * @return preguntas Datos de la pregunta eliminada
+	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
+	 * @throws SecurityException Si no puede eliminar la pregunta porque no pertenece al usuario
+	 * @see com.criminal.webapp.modelo.dao.SecurityException
+	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
+	 */
+	Pregunta borrarPorUsuario(int id, int usuarioId, String fecha_aprobada) throws Exception, SecurityException;
+	
+	/**
+	 * Elimina una pregunta de la BBDD despues de comprobar que pertenezca al administrador intentando borrarla
 	 * @param id ID de la pregunta a borrar
 	 * @param usuarioId Usuario al que pertenece la pregunta
 	 * @return preguntas Datos de la pregunta eliminada
@@ -79,7 +109,7 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	 * @see com.criminal.webapp.modelo.dao.SecurityException
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
-	Pregunta borrar(int id, int userId) throws Exception, SecurityException;
+	Pregunta borrarPorAdmin(int id, int usuarioId) throws Exception, SecurityException;
 	
 	/**
 	 * Busca todos las preguntas agregadas a la BBDD por un usuario especifico
@@ -90,5 +120,5 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	 * @throws SecurityException Si la pregunta no pertenece al usuario
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
-	Pregunta getById(int id, int userId) throws Exception, SecurityException;
+	Pregunta conseguirPorId(int id, int usuarioId) throws Exception, SecurityException;
 }

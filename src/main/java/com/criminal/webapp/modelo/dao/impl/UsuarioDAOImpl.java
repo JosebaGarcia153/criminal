@@ -31,11 +31,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 	}
 	
 	
-	private final String SQL_EXISTE = "SELECT u.id, u.nombre, password, r.id, r.nombre FROM usuarios u, rol r WHERE u.nombre = ? AND password = MD5(?) AND rol_id = r.id; ";
+	private final String SQL_EXISTS = "SELECT u.id, u.nombre, password, r.id, r.nombre FROM usuarios u, rol r WHERE u.nombre = ? AND password = MD5(?) AND rol_id = r.id; ";
 	
-	private final String SQL_CREAR = "INSERT INTO usuarios (nombre, password, rol_id) VALUES (?, MD5(?), 1); ";
+	private final String SQL_CREATE = "INSERT INTO usuarios (nombre, password, rol_id) VALUES (?, MD5(?), 1); ";
 	
-	private final String SQL_ENCONTRAR = "SELECT nombre from usuarios WHERE nombre = ?; ";
+	private final String SQL_FIND = "SELECT nombre from usuarios WHERE nombre = ?; ";
 	
 	
 	@Override
@@ -45,7 +45,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 		
 		try(	
 			Connection conexion = ConnectionManager.getConnection();
-			PreparedStatement pst = conexion.prepareStatement(SQL_EXISTE);	
+			PreparedStatement pst = conexion.prepareStatement(SQL_EXISTS);	
 			) {
 			
 			pst.setString(1, nombre);
@@ -73,7 +73,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 		
 		try ( 
 			Connection connection = ConnectionManager.getConnection();
-			PreparedStatement pst = connection.prepareStatement(SQL_CREAR, PreparedStatement.RETURN_GENERATED_KEYS);
+			PreparedStatement pst = connection.prepareStatement(SQL_CREATE, PreparedStatement.RETURN_GENERATED_KEYS);
 			){
 			
 			pst.setString(1, usuario.getNombre());
@@ -112,7 +112,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 		
 		try(	
 			Connection conexion = ConnectionManager.getConnection();
-			PreparedStatement pst = conexion.prepareStatement(SQL_ENCONTRAR);	
+			PreparedStatement pst = conexion.prepareStatement(SQL_FIND);	
 			) {
 			
 			pst.setString(1, nombre);

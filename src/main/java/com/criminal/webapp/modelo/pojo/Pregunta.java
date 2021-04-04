@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
  * Clase para generar instancias de respuestas
  * 
  * id guarda la ID de la pregunta
- * pregunta guarda el texto de la pregunta
+ * nombre guarda el texto de la pregunta
  * dificultad guarda la dificultad en un rango del 1 al 5
  * tiempo guarda el tiempo que se da para responder
  * comentario añade un comentario sobre la respuesta correcta
@@ -19,6 +19,7 @@ import javax.validation.constraints.Size;
  * categoria guarda una instancia de la categoria al a que pertenece la pregunta
  * repuestas guarda un arraylist de posibles respuestas a la pregunta
  * id_usuario comprueba el ID del usuario para violaciones de seguridad
+ * fecha_aprobada guarda la fecha en la que un administrador la a aprobado
  * @see Usuario
  * @see Categoria
  * @see Respuesta
@@ -28,7 +29,7 @@ public class Pregunta {
 	
 	@NotEmpty(message = "La preguna no puede estar vacía")
 	@Size(min = 5, max = 100, message = "La pregunta tiene que tener entre 5 y 100 caracteres")
-	private String pregunta;
+	private String nombre;
 	
 	private int dificultad;
 	private int tiempo;
@@ -40,13 +41,14 @@ public class Pregunta {
 	private Usuario usuario;
 	private Categoria categoria;
 	private ArrayList<Respuesta> respuestas;
-	private int id_usuario;
+	private int usuario_id;
+	private String fecha_aprobada;
 	
 	
 	public Pregunta() {
 		super();
 		this.id = 0;
-		this.pregunta = "";
+		this.nombre = "";
 		this.dificultad = 0;
 		this.tiempo = 0;
 		this.comentario = "";
@@ -54,7 +56,8 @@ public class Pregunta {
 		this.usuario = new Usuario();
 		this.categoria = new Categoria();
 		this.respuestas = new ArrayList<Respuesta>();
-		this.id_usuario = 0;
+		this.usuario_id = 0;
+		this.fecha_aprobada = "";
 	}
 
 
@@ -67,12 +70,12 @@ public class Pregunta {
 	}
 
 
-	public String getPregunta() {
-		return pregunta;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setPregunta(String pregunta) {
-		this.pregunta = pregunta;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 
@@ -139,19 +142,29 @@ public class Pregunta {
 	}
 
 
-	public int getId_usuario() {
-		return id_usuario;
+	public int getUsuario_id() {
+		return usuario_id;
 	}
 
-	public void setId_usuario(int id_usuario) {
-		this.id_usuario = id_usuario;
+	public void setUsuario_id(int usuario_id) {
+		this.usuario_id = usuario_id;
+	}
+	
+	
+	public String getFecha_aprobada() {
+		return fecha_aprobada;
+	}
+
+	public void setFecha_aprobada(String fecha_aprobada) {
+		this.fecha_aprobada = fecha_aprobada;
 	}
 
 
 	@Override
 	public String toString() {
-		return "Pregunta [id=" + id + ", pregunta=" + pregunta + ", dificultad=" + dificultad + ", tiempo=" + tiempo
+		return "Pregunta [id=" + id + ", nombre=" + nombre + ", dificultad=" + dificultad + ", tiempo=" + tiempo
 				+ ", comentario=" + comentario + ", imagen=" + imagen + ", usuario=" + usuario + ", categoria="
-				+ categoria + ", respuestas=" + respuestas + ", id_usuario=" + id_usuario + "]";
+				+ categoria + ", respuestas=" + respuestas + ", usuario_id=" + usuario_id + ", fecha_aprobada="
+				+ fecha_aprobada + "]";
 	}
 }

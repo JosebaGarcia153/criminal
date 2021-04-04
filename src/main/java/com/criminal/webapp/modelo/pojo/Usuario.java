@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 /**
  * Clase para generar instancias de usuarios
  * 
- * name guarda el nombre del usuario
+ * nombre guarda el nombre del usuario
  * password guarda la contraseña
  * rol es un objeto usado para indicar si el usuario es un administrador o no
  * @see Rol

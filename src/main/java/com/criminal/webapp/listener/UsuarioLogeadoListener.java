@@ -54,7 +54,7 @@ public class UsuarioLogeadoListener implements HttpSessionListener, HttpSessionA
          ServletContext sc = event.getSession().getServletContext();
          String sessionId = event.getSession().getId();
          
-         LOG.trace("Nuevo atributo de sesión" + attributeNombre);
+         LOG.trace("Nuevo atributo de sesión " + attributeNombre);
          
          //Se acaba de hacer el login en LoginController
          if ("usario_login".equals(attributeNombre)) {
