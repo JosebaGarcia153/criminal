@@ -18,6 +18,6 @@
 	<input type="submit" value="Login" class="btn btn-primary">
 </form>
 <br/>
-<a href="views/login/sign.jsp">Sign Up</a>
+<a href="views/login/sign.jsp">Crear Usuario</a>
 
 <%@include file="../../include/footer.jsp" %>

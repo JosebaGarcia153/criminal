@@ -18,7 +18,7 @@
 	<input type="text" id="repassword" name="repassword" class="form-control" placeholder="Confirma tu contraseña" required>
 	</div>
         
-	<input type="submit" id="btnSign" disabled="disabled" value="Sign Up" class="btn btn-primary">
+	<input type="submit" id="btnSign" value="Crear" class="btn btn-primary">
 </form>
 
 
