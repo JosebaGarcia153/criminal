@@ -31,6 +31,13 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	 */
 	ArrayList<Pregunta> conseguirPorCategoria (int categoriaId);
 	
+	/**
+	 * Busca todos las preguntas aprobadas de una categoria a usuarios normales
+	 * @param categoriaId ID de la categoria a mostrar
+	 * @return preguntas Entradas encontradas
+	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
+	 */
+	ArrayList<Pregunta> conseguirPorCategoriaPorUsuario (int categoriaId);
 	
 	/**
 	 * Busca las preguntas agregadas a la BBDD por un usuario especifico
@@ -76,15 +83,25 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	Pregunta crear(Pregunta pregunta) throws Exception;
 	
 	/**
-	 * Edita una pregunta de la BBDD despues de comprobar que pertenezca al usuario intentando editarla o a un administrador
+	 * Edita una pregunta de la BBDD despues de comprobar que pertenezca al usuario intentando editarla
 	 * @param pregunta datos que modificar a la pregunta
 	 * @param usuarioId Usuario al que pertenece la pregunta
 	 * @return pregunta Datos de al pregunta modificada
 	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
+	 * @throws SecurityException Si no puede eliminar la pregunta porque no pertenece al usuario
 	 * @see com.criminal.webapp.modelo.dao.SecurityException
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
 	Pregunta actualizar(Pregunta pregunta, int usuarioId) throws Exception, SecurityException;
+	
+	/**
+	 * Edita una pregunta de la BBDD por un administrador
+	 * @param pregunta datos que modificar a la pregunta
+	 * @return pregunta Datos de al pregunta modificada
+	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
+	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
+	 */
+	Pregunta actualizarPorAdmin(Pregunta pregunta) throws Exception;
 	
 	/**
 	 * Elimina una pregunta de la BBDD despues de comprobar que pertenezca al usuario intentando borrarla y no este aprobada
@@ -100,25 +117,31 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	Pregunta borrarPorUsuario(int id, int usuarioId, String fecha_aprobada) throws Exception, SecurityException;
 	
 	/**
-	 * Elimina una pregunta de la BBDD despues de comprobar que pertenezca al administrador intentando borrarla
+	 * Elimina una pregunta de la BBDD por un administrador
 	 * @param id ID de la pregunta a borrar
-	 * @param usuarioId Usuario al que pertenece la pregunta
 	 * @return preguntas Datos de la pregunta eliminada
+	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
+	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
+	 */
+	Pregunta borrarPorAdmin(int id) throws Exception;
+	
+	/**
+	 * Busca todos las preguntas agregadas a la BBDD por un usuario especifico
+	 * @param id ID de la pregunta a encontrar
+	 * @return pregunta Datos de la pregunta encontrada
 	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
 	 * @throws SecurityException Si no puede eliminar la pregunta porque no pertenece al usuario
 	 * @see com.criminal.webapp.modelo.dao.SecurityException
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
-	Pregunta borrarPorAdmin(int id, int usuarioId) throws Exception, SecurityException;
+	Pregunta conseguirPorId(int id, int usuarioId) throws Exception, SecurityException;
 	
 	/**
-	 * Busca todos las preguntas agregadas a la BBDD por un usuario especifico
+	 * Busca una pregunta específica para expandirla en la lista de preguntas por categoria
 	 * @param id ID de la pregunta a encontrar
-	 * @param usuarioId Usuario al que pertenece la pregunta
 	 * @return pregunta Datos de la pregunta encontrada
 	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
-	 * @throws SecurityException Si la pregunta no pertenece al usuario
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
-	Pregunta conseguirPorId(int id, int usuarioId) throws Exception, SecurityException;
+	public Pregunta conseguirPorId(int id) throws Exception;
 }

@@ -58,6 +58,15 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 										+ " AND c.id = ? " // filtramos por el id de la categoria
 										+ " ORDER BY p.id DESC; ";
 	
+	private final String SQL_GET_BY_CATEGORY_APPROVED = "SELECT p.id 'pregunta_id', p.nombre 'pregunta_nombre', dificultad, imagen,"
+										+ " tiempo, comentario, fecha_aprobada, usuario_id, c.id 'categoria_id', c.nombre 'categoria_nombre',"
+										+ " r.id 'respuesta_id', r.nombre 'respuesta_nombre', esCorrecta, num_respuesta"
+										+ " FROM preguntas p, respuestas r, categorias c"
+										+ " WHERE p.categoria_id = c.id AND r.pregunta_id = p.id"
+										+ " AND c.id = ? " // filtramos por el id de la categoria
+										+ " AND fecha_aprobada IS NOT NULL " //filtramos por la aprobacion
+										+ " ORDER BY p.id DESC; ";
+	
 	private final String SQL_GET_ALL_BY_USER = "SELECT p.id 'pregunta_id', p.nombre 'pregunta_nombre', dificultad, imagen,"
 										+ " tiempo, comentario, fecha_aprobada, usuario_id, c.id 'categoria_id', c.nombre 'categoria_nombre',"
 										+ " r.id 'respuesta_id', r.nombre 'respuesta_nombre', esCorrecta, num_respuesta"
@@ -68,12 +77,13 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 	
 	private final String SQL_GET_BY_USER_APPROVED = "SELECT p.id 'pregunta_id', p.nombre 'pregunta_nombre', dificultad, imagen,"
 										+ " tiempo, comentario, fecha_aprobada, usuario_id, c.id 'categoria_id', c.nombre 'categoria_nombre',"
-										+ "  r.id 'respuesta_id', r.nombre 'respuesta_nombre', esCorrecta, num_respuesta"
+										+ " r.id 'respuesta_id', r.nombre 'respuesta_nombre', esCorrecta, num_respuesta"
 										+ " FROM preguntas p, respuestas r, categorias c"
 										+ " WHERE p.categoria_id = c.id AND r.pregunta_id = p.id"
 										+ " AND fecha_aprobada IS NOT NULL " //filtramos por la aprobacion
 										+ " AND p.usuario_id = ?" // filtramos por el id del usuario
 										+ " ORDER BY p.id DESC; ";
+
 	
 	private final String SQL_GET_BY_USER_NON_APPROVED = "SELECT p.id 'pregunta_id', p.nombre 'pregunta_nombre', dificultad, imagen,"
 										+ " tiempo, comentario, fecha_aprobada, usuario_id, c.id 'categoria_id', c.nombre 'categoria_nombre',"
@@ -95,18 +105,24 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 										+ " VALUES (?, ?, ?, ?); ";
 	
 	private final String SQL_UPDATE_QUESTION = "UPDATE preguntas SET nombre = ?, dificultad = ?, tiempo = ?,"
-										+ " comentario = ?, imagen = ?, id_usuario = ?, id_categoria = ?"
+										+ " comentario = ?, imagen = ?, usuario_id = ?, categoria_id = ?"
 										+ " WHERE id = ?; ";
 	
-	private final String SQL_UPDATE_ANSWER = "UPDATE respuestas SET nombre = ?, esCorrecta = ?, pregunta_id = ?, num_respuesta = ?;"
+	private final String SQL_UPDATE_ANSWER = "UPDATE respuestas SET nombre = ?, esCorrecta = ?, pregunta_id = ?, num_respuesta = ?"
 										+ " WHERE id = ?; ";
 	
 	private final String SQL_DELETE = "DELETE FROM preguntas WHERE id = ?; ";
 	
 	private final String SQL_GET_QUESTION_BY_ID = "SELECT p.id 'pregunta_id', p.nombre 'pregunta_nombre', dificultad, imagen, tiempo, comentario, "
-										+ " fecha_aprobada, usuario_id, c.id 'categoria_id', c.nombre 'categoria_nombre', r.nombre 'respuesta_nombre'"
+										+ " fecha_aprobada, usuario_id, c.id 'categoria_id', c.nombre 'categoria_nombre', r.id 'respuesta_id', r.nombre 'respuesta_nombre'"
 										+ " FROM preguntas p, respuestas r, categorias c"
 										+ " WHERE p.categoria_id = c.id AND r.pregunta_id = p.id AND p.id = ? AND p.usuario_id = ?; ";
+	
+	private final String SQL_GET_ONE_QUESTION_BY_ID = "SELECT p.id 'pregunta_id', p.nombre 'pregunta_nombre', dificultad, imagen,"
+										+ " tiempo, comentario, fecha_aprobada, usuario_id, r.esCorrecta,"
+										+ " c.id 'categoria_id', c.nombre 'categoria_nombre', r.nombre 'respuesta_nombre'"
+										+ " FROM preguntas p, respuestas r, categorias c"
+										+ " WHERE p.categoria_id = c.id AND r.pregunta_id = p.id AND p.id = ?; ";
 	
 	@Override
 	public ArrayList<Pregunta> conseguirTodas() {
@@ -224,7 +240,65 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 		
 		try (
 			Connection conexion = ConnectionManager.getConnection();
-			PreparedStatement pst = conexion.prepareStatement(SQL_GET_ALL_BY_USER);
+			PreparedStatement pst = conexion.prepareStatement(SQL_GET_BY_CATEGORY);
+			){
+			
+			pst.setNull(1, java.sql.Types.NULL);
+			pst.setInt(1, categoriaId);
+			
+			LOG.debug(pst);
+			try (ResultSet rs = pst.executeQuery()) {
+				while( rs.next() ) {
+					
+					int preguntaId = rs.getInt("pregunta_id"); //clave del hashmap
+					Pregunta pregunta = preguntas.get(preguntaId);
+					
+					//Si la pregunta no existe, crea una nueva y guarda los datos
+					if (pregunta == null) {
+						
+						pregunta = mapper(rs);
+					}
+					
+					//Crea nueva respuesta y guarda los datos
+					Respuesta respuesta = new Respuesta();
+					
+					respuesta.setId(rs.getInt("respuesta_id"));
+					respuesta.setNombre(rs.getString("respuesta_nombre"));
+					
+					if (rs.getInt("esCorrecta") == 1) {
+						respuesta.setEsCorrecta(false);
+					} else {
+						respuesta.setEsCorrecta(true);
+					}
+					
+					respuesta.setNum_respuesta(rs.getInt("num_respuesta"));
+					
+					//Agrega respuesta a la pregunta
+					//Valor del hashmap
+					pregunta.getRespuestas().add(respuesta);
+					
+					//Guarda la pregunta en el hashmap
+					preguntas.put(preguntaId, pregunta);
+				}//while
+			}//try2
+		} catch (Exception e) {
+			
+			LOG.error(e);
+		}//try1
+		//Devuelve un arraylist de preguntas, cada una con su lista de respuestas
+		return new ArrayList<Pregunta>(preguntas.values());
+	}
+	
+	
+	@Override
+	public ArrayList<Pregunta> conseguirPorCategoriaPorUsuario(int categoriaId) {
+		
+		//La clave Integer es el ID de la pregunta
+		HashMap<Integer, Pregunta> preguntas = new HashMap<Integer, Pregunta>();
+		
+		try (
+			Connection conexion = ConnectionManager.getConnection();
+			PreparedStatement pst = conexion.prepareStatement(SQL_GET_BY_CATEGORY_APPROVED);
 			){
 			
 			pst.setNull(1, java.sql.Types.NULL);
@@ -535,7 +609,7 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 			throw new Exception("No se ha escrito una pregunta");
 		}
 		
-		if (pregunta.getFecha_aprobada() != null) {
+		if (pregunta.getFecha_aprobada() != "") {
 			throw new Exception("La pregunta ha sido aprobada. No se puede modificar");
 		}
 		
@@ -549,8 +623,9 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 			pst.setInt(3, pregunta.getTiempo());
 			pst.setString(4, pregunta.getComentario());
 			pst.setString(5, pregunta.getImagen());
-			pst.setInt(4, pregunta.getUsuario().getId());
-			pst.setInt(5, pregunta.getCategoria().getId());
+			pst.setInt(6, pregunta.getUsuario().getId());
+			pst.setInt(7, pregunta.getCategoria().getId());
+			pst.setInt(8, pregunta.getId());
 			
 			int affectedRows = pst.executeUpdate();
 			
@@ -580,6 +655,7 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 					pst2.setString(1, pregunta.getRespuestas().get(i).getNombre());
 					pst2.setInt(3, pregunta.getId());
 					pst2.setInt(4, pregunta.getRespuestas().get(i).getNum_respuesta());
+					pst2.setInt(5, pregunta.getRespuestas().get(i).getId());
 					
 					if (pregunta.getRespuestas().get(i).isEsCorrecta() == false) {
 						pst2.setInt(2, 1);
@@ -608,7 +684,92 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 			}//try3
 		} catch (SQLException e) {
 			
-			throw new SQLException("Ha ocurrido un error. Es posible que la pregunta ya exista o una respuesta este duplicada");
+			throw new SQLException("Ha ocurrido un error. Es posible que la pregunta ya exista");
+		}//try1
+		
+		return pregunta;
+	}
+	
+	
+	@Override
+	public Pregunta actualizarPorAdmin(Pregunta pregunta) throws Exception {
+		
+		if (pregunta.getNombre() == null) {
+			throw new Exception("No se ha escrito una pregunta");
+		}
+		
+		try ( 
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_UPDATE_QUESTION, PreparedStatement.RETURN_GENERATED_KEYS);
+			){
+			
+			pst.setString(1, pregunta.getNombre());
+			pst.setInt(2, pregunta.getDificultad());
+			pst.setInt(3, pregunta.getTiempo());
+			pst.setString(4, pregunta.getComentario());
+			pst.setString(5, pregunta.getImagen());
+			pst.setInt(6, pregunta.getUsuario().getId());
+			pst.setInt(7, pregunta.getCategoria().getId());
+			pst.setInt(8, pregunta.getId());
+			
+			int affectedRows = pst.executeUpdate();
+			
+			LOG.debug(pst);
+			if (affectedRows == 1) {
+				
+				//conseguir el ID
+				try ( ResultSet rsKeys = pst.getGeneratedKeys(); ) {
+					
+					if (rsKeys.next()) {
+
+						pregunta.setId(rsKeys.getInt(1));
+					}
+				}//try2
+			} else {
+
+				throw new Exception ("No se ha podido actualizar " + pregunta.getNombre());
+			}//if
+			
+			try ( 
+				Connection connection2 = ConnectionManager.getConnection();
+				PreparedStatement pst2 = connection.prepareStatement(SQL_UPDATE_ANSWER, PreparedStatement.RETURN_GENERATED_KEYS);
+				){
+				
+				for (int i = 0; i < pregunta.getRespuestas().size(); i++) {
+					
+					pst2.setString(1, pregunta.getRespuestas().get(i).getNombre());
+					pst2.setInt(3, pregunta.getId());
+					pst2.setInt(4, pregunta.getRespuestas().get(i).getNum_respuesta());
+					pst2.setInt(5, pregunta.getRespuestas().get(i).getId());
+					
+					if (pregunta.getRespuestas().get(i).isEsCorrecta() == false) {
+						pst2.setInt(2, 1);
+					} else {
+						pst2.setInt(2, 2);
+					}
+					
+					int affectedRows2 = pst2.executeUpdate();
+					
+					LOG.debug(pst2);
+					if (affectedRows2 == 1) {
+						
+						//conseguir el ID
+						try ( ResultSet rsKeys = pst2.getGeneratedKeys(); ) {
+							
+							if (rsKeys.next()) {
+
+								pregunta.setId(rsKeys.getInt(1));
+							}
+						}//try4
+					} else {
+
+						throw new Exception ("No se ha podido actualizar " + pregunta.getRespuestas().get(i));
+					}//if
+				}//for
+			}//try3
+		} catch (SQLException e) {
+			
+			throw new SQLException("Ha ocurrido un error. Es posible que la pregunta ya exista");
 		}//try1
 		
 		return pregunta;
@@ -644,12 +805,10 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 	
 	
 	@Override
-	public Pregunta borrarPorAdmin(int id, int usuarioId) throws Exception, SecurityException {
+	public Pregunta borrarPorAdmin(int id) throws Exception {
 		
 		Pregunta pregunta = new Pregunta();
-		
-		//Este metodo lanza una SecurityException por lo que no hace falta usarla abajo
-		pregunta = conseguirPorId(id, usuarioId);
+		pregunta = conseguirPorId(id);
 		
 		try (	
 			Connection connection = ConnectionManager.getConnection();
@@ -657,7 +816,6 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 			){
 			
 			pst.setInt(1, id);
-			pst.setInt(2, usuarioId);
 
 			pst.executeUpdate();
 			LOG.debug(pst);
@@ -671,7 +829,6 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 	public Pregunta conseguirPorId(int id, int usuarioId) throws Exception, SecurityException {
 		
 		Pregunta pregunta = new Pregunta();
-		
 		
 		ArrayList<Respuesta> respuestas = new ArrayList<Respuesta>();
 
@@ -691,14 +848,61 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 					pregunta = mapper(rs);
 					
 					Respuesta respuesta = new Respuesta();
+					respuesta.setId(rs.getInt("respuesta_id"));
 					respuesta.setNombre(rs.getString("respuesta_nombre"));
 					respuestas.add(respuesta);
 				}
 				
 				pregunta.setRespuestas(respuestas);
+				
 			} catch (Exception e) {
 
 				throw new SecurityException();
+			}//try2
+		} //try1
+		
+		return pregunta;
+	}
+	
+	
+	@Override
+	public Pregunta conseguirPorId(int id) throws Exception {
+		
+		Pregunta pregunta = new Pregunta();
+		
+		ArrayList<Respuesta> respuestas = new ArrayList<Respuesta>();
+
+		try (
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_GET_ONE_QUESTION_BY_ID);
+			){
+
+			pst.setInt(1, id);
+			
+			try ( ResultSet rs = pst.executeQuery() ){
+				
+				LOG.debug(pst);
+				while (rs.next()) {
+
+					pregunta = mapper(rs);
+					
+					Respuesta respuesta = new Respuesta();
+					respuesta.setNombre(rs.getString("respuesta_nombre"));
+					
+					if (rs.getInt("esCorrecta") == 1) {
+						respuesta.setEsCorrecta(false);
+					} else {
+						respuesta.setEsCorrecta(true);
+					}
+					
+					respuestas.add(respuesta);
+				}
+				
+				pregunta.setRespuestas(respuestas);
+				
+			} catch (Exception e) {
+
+				throw new Exception();
 			}//try2
 		} //try1
 		
@@ -719,7 +923,7 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 		p.setImagen(rs.getString("imagen"));
 		p.setUsuario_id(rs.getInt("usuario_id"));
 		
-		if (rs.getString("fecha_aprobada") != null) {
+		if (rs.getString("fecha_aprobada") != "") {
 			p.setFecha_aprobada(rs.getString("fecha_aprobada"));
 		}
 		

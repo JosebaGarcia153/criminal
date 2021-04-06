@@ -35,22 +35,27 @@ public class CategoriaDAOImpl implements CategoriaDAO{
 	}
 	
 	private final String SQL_GET_ALL = "SELECT id, nombre FROM categorias ORDER BY nombre ASC; ";
-//	private final String SQL_GET_ALL_WITH_GAMES = "SELECT c.id 'category_id', c.name 'category_name', g.id 'game_id', g.name 'game_name', price FROM games g, categories c WHERE g.category_id = c.id ORDER BY c.name ASC LIMIT 500; ";
-//	
+	
+	private final String SQL_GET_ALL_WITH_QUESTIONS = " SELECT c.id 'categoria_id', c.nombre 'categoria_nombre',"
+													+ " p.id 'pregunta_id', p.nombre 'pregunta_nombre'"
+													+ " FROM preguntas p, categorias c"
+													+ " WHERE p.categoria_id = c.id"
+													+ " ORDER BY c.nombre ASC; ";
+	
+	
+	private final String SQL_GET_ALL_APPROVED_WITH_QUESTIONS = " SELECT c.id 'categoria_id', c.nombre 'categoria_nombre',"
+													+ " p.id 'pregunta_id', p.nombre 'pregunta_nombre'"
+													+ " FROM preguntas p, categorias c"
+													+ " WHERE p.categoria_id = c.id"
+													+ " AND fecha_aprobada IS NOT NULL " //filtramos por la aprobacion
+													+ " ORDER BY c.nombre ASC; ";
+	
 //	private final String SQL_READ_BY_ID = "SELECT id, name FROM categories WHERE id = ? LIMIT 500; ";
-//
+
 //	private final String SQL_CREATE = "INSERT INTO categories (name) VALUES (?); ";
 //	private final String SQL_UPDATE = "UPDATE categories SET name = ? WHERE id = ?; ";
 //	private final String SQL_DELETE = "DELETE FROM categories WHERE id = ?; ";
 	
-	//private final String PA_GET_ALL = " { CALL pa_category_list() }  ";
-	//private final String SQL_GET_ALL_WITH_GAMES = " SELECT c.id 'category_id', c.name 'category_name', g.id 'game_id', g.name 'game_name', image, price FROM games g, categories c WHERE g.category_id = c.id AND g.approval_date IS NOT NULL ORDER BY c.name ASC LIMIT 500; ";
-	
-	//private final String PA_GET_BY_ID = " { CALL pa_category_by_id(?) } ";
-	
-	//private final String PA_INSERT = " { CALL pa_category_insert(?,?) } ";
-	//private final String PA_UPDATE = " { CALL pa_category_update(?,?) } ";	
-	//private final String PA_DELETE = " { CALL pa_category_delete(?) } ";
 	
 	@Override
 	public ArrayList<Categoria> conseguirTodas() {
@@ -75,6 +80,126 @@ public class CategoriaDAOImpl implements CategoriaDAO{
 		return categorias;
 	}
 	
+	
+	@Override
+	public ArrayList<Categoria> conseguirTodasConPreguntas() {
+		
+		//La clave Integer es el ID de la categoria
+		HashMap<Integer, Categoria> categorias = new HashMap<Integer, Categoria>();
+
+		try(
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_GET_ALL_WITH_QUESTIONS);
+			ResultSet rs = pst.executeQuery();
+			){
+			
+			LOG.debug(pst);
+			while( rs.next() ) {
+					
+				int categoriaId = rs.getInt("categoria_id"); //hashmap key
+				
+				Categoria categoria = categorias.get(categoriaId);
+				
+				//Si la categoria no existe, crea una nueva y guarda los datos
+				if (categoria == null) {
+					
+					categoria = new Categoria();
+					categoria.setId(categoriaId);
+					categoria.setNombre(rs.getString("categoria_nombre"));
+				}
+				
+				//Crea nueva pregunta y guarda los datos
+				Pregunta pregunta = new Pregunta();
+				pregunta.setId(rs.getInt("pregunta_id"));
+				pregunta.setNombre(rs.getString("pregunta_nombre"));
+				
+				//Agrega pregunta a la categoria
+				//Value del hashmap
+				categoria.getPreguntas().add(pregunta);
+				
+				//Guarda la categoria en el hashmap
+				categorias.put(categoriaId, categoria);					
+			}
+				
+		} catch (Exception e) {
+			
+			LOG.error(e);
+		}
+		//Devuelve un arraylist de categorias, cada una con su lista de preguntas
+		return new ArrayList<Categoria>(categorias.values());
+	}
+	
+	
+	@Override
+	public ArrayList<Categoria> conseguirTodasConPreguntasPorUsuario() {
+		
+		//La clave Integer es el ID de la categoria
+		HashMap<Integer, Categoria> categorias = new HashMap<Integer, Categoria>();
+
+		try(
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_GET_ALL_APPROVED_WITH_QUESTIONS);
+			ResultSet rs = pst.executeQuery();
+			){
+			
+			LOG.debug(pst);
+			while( rs.next() ) {
+					
+				int categoriaId = rs.getInt("categoria_id"); //hashmap key
+				
+				Categoria categoria = categorias.get(categoriaId);
+				
+				//Si la categoria no existe, crea una nueva y guarda los datos
+				if (categoria == null) {
+					
+					categoria = new Categoria();
+					categoria.setId(categoriaId);
+					categoria.setNombre(rs.getString("categoria_nombre"));
+				}
+				
+				//Crea nueva pregunta y guarda los datos
+				Pregunta pregunta = new Pregunta();
+				pregunta.setId(rs.getInt("pregunta_id"));
+				pregunta.setNombre(rs.getString("pregunta_nombre"));		
+				
+				//Agrega pregunta a la categoria
+				//Value del hashmap
+				categoria.getPreguntas().add(pregunta);
+				
+				//Guarda la categoria en el hashmap
+				categorias.put(categoriaId, categoria);					
+			}
+				
+		} catch (Exception e) {
+			
+			LOG.error(e);
+		}
+		//Devuelve un arraylist de categorias, cada una con su lista de preguntas
+		return new ArrayList<Categoria>(categorias.values());
+	}
+
+	
+	@Override
+	public Categoria crear(Categoria pojo) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	@Override
+	public Categoria actualizar(Categoria pojo) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	@Override
+	public Categoria borrar(int id) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	private Categoria mapper(ResultSet rs) throws SQLException {
 		
 		Categoria c = new Categoria();
@@ -86,19 +211,13 @@ public class CategoriaDAOImpl implements CategoriaDAO{
 	}
 
 	@Override
-	public Categoria crear(Categoria pojo) throws Exception {
+	public Categoria borrar(int id, int usuarioId) throws Exception, SecurityException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Categoria actualizar(Categoria pojo, int usuarioId) throws Exception, SecurityException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Categoria borrar(int id, int usuarioId) throws Exception, SecurityException {
 		// TODO Auto-generated method stub
 		return null;
 	}

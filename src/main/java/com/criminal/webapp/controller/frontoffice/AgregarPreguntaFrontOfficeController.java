@@ -117,8 +117,11 @@ public class AgregarPreguntaFrontOfficeController extends HttpServlet {
 		
 		String categoriaIdParam = request.getParameter("categoria_id");
 		
+		String respuesta1idParam = request.getParameter("resp1id");
 		String respuesta1nombre = request.getParameter("resp1");
+		String respuesta2idParam = request.getParameter("resp2id");
 		String respuesta2nombre = request.getParameter("resp2");
+		String respuesta3idParam = request.getParameter("resp3id");
 		String respuesta3nombre = request.getParameter("resp3");
 		String respuesta_correctaParam = request.getParameter("respuesta_correcta");
 		
@@ -135,7 +138,9 @@ public class AgregarPreguntaFrontOfficeController extends HttpServlet {
 			int dificultad = Integer.parseInt(dificultadParam);
 			int tiempo = Integer.parseInt(tiempoParam);
 			int respuesta_correcta = Integer.parseInt(respuesta_correctaParam);
-			
+			int respuesta1id = Integer.parseInt(respuesta1idParam);
+			int respuesta2id = Integer.parseInt(respuesta2idParam);
+			int respuesta3id = Integer.parseInt(respuesta3idParam);
 			
 			/* **************************************************************** 
 			 * Comprobar Seguridad, siempre que no sea una nueva Pregunta
@@ -163,12 +168,15 @@ public class AgregarPreguntaFrontOfficeController extends HttpServlet {
 			Respuesta respuesta2 = new Respuesta();
 			Respuesta respuesta3 = new Respuesta();
 			
+			respuesta1.setId(respuesta1id);
+			respuesta2.setId(respuesta2id);
+			respuesta3.setId(respuesta3id);
 			respuesta1.setNombre(respuesta1nombre);
 			respuesta2.setNombre(respuesta2nombre);
 			respuesta3.setNombre(respuesta3nombre);
 			respuesta1.setNum_respuesta(1);
-			respuesta1.setNum_respuesta(2);
-			respuesta1.setNum_respuesta(3);
+			respuesta2.setNum_respuesta(2);
+			respuesta3.setNum_respuesta(3);
 			
 			switch (respuesta_correcta) {
 			case 1:

@@ -5,6 +5,8 @@
 
 <form action="signup" method="post">
 	
+	<h1>Crear nuevo usuario</h1>
+	
 	<div class="form-group">
 	<label for="nombre">Nombre:</label>
 	<input type="text" id="nombre" name="nombre" autofocus value="${nombre}" onkeyUp="searchUser(event)" class="form-control" placeholder="Inserta tu email" required>	

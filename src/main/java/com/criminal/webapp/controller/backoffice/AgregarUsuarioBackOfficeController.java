@@ -35,10 +35,10 @@ import com.criminal.webapp.modelo.pojo.Usuario;
  */
 @WebServlet("/views/backoffice/agregar-pregunta")
 @MultipartConfig
-public class AgregarPreguntaBackOfficeController extends HttpServlet {
+public class AgregarUsuarioBackOfficeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger LOG = Logger.getLogger(AgregarPreguntaBackOfficeController.class);
+	private static final Logger LOG = Logger.getLogger(AgregarUsuarioBackOfficeController.class);
 	private static final PreguntaDAOImpl dao = PreguntaDAOImpl.getInstance();
 	private static final CategoriaDAOImpl daoC = CategoriaDAOImpl.getInstance();
 	private static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

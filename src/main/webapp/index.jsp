@@ -5,7 +5,7 @@
 	<jsp:param name="title" value="Index" />
 </jsp:include>
 	
-	<h1>INICIO</h1>
+	<h1>Criminal Website Index</h1>
 		
 </body>
 

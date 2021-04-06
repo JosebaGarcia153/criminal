@@ -53,20 +53,15 @@ public class LoginController extends HttpServlet {
 			
 		} else {			
 			
-			session.setMaxInactiveInterval(60 * 1 * 20); //la sesion dura 20 minutos si inactivo
+			session.setMaxInactiveInterval(60 * 60 * 2); //la sesion dura 2 horas si inactivo
 			session.setAttribute("usuario_login", usuario); // @see UsuarioLogeadoListener => attributeAdded
 			
-			session.setAttribute("alert", new Alert("success", "Has iniciado sesión"));
-		
+			session.setAttribute("alert", new Alert("success", "Has iniciado sesión"));		
 			
+			//Seguir una ruta de carpetas dependiendo del tipo de usuario
 			if (usuario.getRol().getId() == Rol.ADMIN) {
-				
-				//request.getRequestDispatcher("views/backoffice/inicio").forward(request, response);
-				response.sendRedirect("views/backoffice/inicio");
-				
+				response.sendRedirect("views/backoffice/inicio");				
 			} else {
-				
-				//request.getRequestDispatcher("views/frontoffice/inicio").forward(request, response);
 				response.sendRedirect("views/frontoffice/inicio");
 			}
 		}

@@ -33,12 +33,15 @@
                                 <div class="sb-nav-link-icon"><i class="fa fa-plus-circle"></i></div>
                                 Agregar Pregunta
                             </a>
-                            <c:if test="${sessionScope.user_login.name eq 'admin'}">
-			            		<a class="nav-link" href="views/backoffice/category-table-control">
-				            		<div class="sb-nav-link-icon"><i class="fa fa-plus-circle"></i></div>
-				            		Tabla de Categorias
-			            		</a>
-			            	</c:if>
+                            <a class="nav-link" href="views/backoffice/tabla-categorias">
+                                <div class="sb-nav-link-icon"><i class="fas fa-wrench"></i></div>
+                                Editar Categorias
+                            </a>
+                            <a class="nav-link" href="views/backoffice/tabla-usuarios">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                Editar Usuarios
+                            </a>
+                                                   
                          </div>   
                     </div>       
                 </nav>

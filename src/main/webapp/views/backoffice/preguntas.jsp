@@ -4,12 +4,13 @@
 <jsp:include page="../../include/backoffice-header.jsp" />
 <jsp:include page="../../include/backoffice-navbar.jsp" />
                         
-	<h2>${title}</h2>
+	<h2>${titulo}</h2>
     
     <table class="tabla table table-striped">
 		<thead>
 			<tr>
-				<td>Id</td>
+				<td>ID</td>
+				<td>ID Usuario</td>
 				<td>Nombre</td>
 				<td>Dificultad</td>
 				<td>Tiempo</td>
@@ -28,7 +29,8 @@
 		<tbody>
 			<c:forEach items="${preguntas}" var="p">
 				<tr>
-					<td>${p.id}</td> <% // no hace falta usar el getter p.id == p.getId() %>
+					<td>${p.id}</td>
+					<td>${p.usuario_id}</td>
 					<td>${p.nombre}</td>
 					<td>${p.dificultad}</td>
 					<td>${p.tiempo}</td>
@@ -51,10 +53,10 @@
 					</c:forEach>
 					<td>${p.comentario}</td>
 					<td>
-						<a href="views/frontoffice/agregar-pregunta?id=${p.id}" class="mr-4">
+						<a href="views/backoffice/agregar-pregunta?id=${p.id}" class="mr-4">
 							<i class="far fa-edit fa-2x" title="Editar Pregunta"></i>
 						</a>
-						<a href="views/frontoffice/borrar?id=${p.id}&aprobada=${p.fecha_aprobada}" onclick="confirmar('${p.nombre}')">
+						<a href="views/backoffice/borrar?id=${p.id}&aprobada=${p.fecha_aprobada}" onclick="confirmar('${p.nombre}')">
 							<i class="fas fa-trash fa-2x" title="Borrar Pregunta"></i>
 						</a>
 					</td>

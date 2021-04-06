@@ -1,4 +1,4 @@
-package com.criminal.webapp.controller.frontoffice;
+package com.criminal.webapp.controller.backoffice;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -13,15 +13,15 @@ import com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl;
 import com.criminal.webapp.modelo.pojo.Usuario;
 
 /**
- * Controlador para ir al index del FrontOffice.
+ * Controlador para ir al index del BackOffice.
  * El metodo GET se encarga de contar los juegos añadidos por el usuario separados por aprobados, pendientes y el numero total.
  * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
  */
-@WebServlet("/views/frontoffice/inicio")
-public class IndexFrontOfficeController extends HttpServlet {
+@WebServlet("/views/backoffice/inicio")
+public class IndexBackOfficeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger LOG = Logger.getLogger(IndexFrontOfficeController.class);
+	private static final Logger LOG = Logger.getLogger(IndexBackOfficeController.class);
 	private static final PreguntaDAOImpl dao = PreguntaDAOImpl.getInstance();
 	
 	/**
@@ -36,11 +36,11 @@ public class IndexFrontOfficeController extends HttpServlet {
 		request.setAttribute("pendientes", dao.contarPorUsuario(usuarioId).getPendientes());
 		request.setAttribute("total", dao.contarPorUsuario(usuarioId).getTotal());
 		
-		// CUIDADO: mirar la URL del servlet "/views/frontoffice/inicio"
+		// CUIDADO: mirar la URL del servlet "/views/backoffice/inicio"
 		// Cuando hacemos forward se pierde lo ultimo de la url y se le suma la variable pagina
 		//------------------------
 		// El forward resuelve la URL de la siguiente manera:
-		//	 "/views/frontoffice/inicio" + "index.jsp" = "/views/frontoffice/index.jsp"
+		//	 "/views/backoffice/inicio" + "index.jsp" = "/views/backoffice/index.jsp"
 		//------------------------
  		String url = "index.jsp";
 		LOG.debug("forward: " + url);

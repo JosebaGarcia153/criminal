@@ -15,12 +15,12 @@
 		
 		<div class="form-group">
 			<label for="nombre">Nombre:</label>
-			<input type="text" name="nombre" value="${pregunta.nombre}" class="pregunta-formulario-control" autofocus placeholder="Escribe la pregunta">
+			<input type="text" name="nombre" id="nombre" value="${pregunta.nombre}" class="pregunta-formulario-control" autofocus placeholder="Escribe la pregunta">
 		</div>
 		
 		<div class="form-group">
 			<label for="dificultad">Dificultad:</label> <small class="form-text text-muted">* El campo se resetea al entrar al formulario</small>
-			<select class="custom-select" value="${pregunta.dificultad}" name="dificultad">
+			<select class="custom-select" value="${pregunta.dificultad}" name="dificultad" id="dificultad">
 				<option value="1">1</option>
 				<option value="2">2</option>
 				<option value="3">3</option>
@@ -31,7 +31,7 @@
 		
 		<div class="form-group">
 			<label for="tiempo">Tiempo:</label>
-			<input type="text" name="tiempo" value="${pregunta.tiempo}" class="pregunta-formulario-control" placeholder="Segundos para responder a la pregunta">
+			<input type="text" name="tiempo" id="tiempo" value="${pregunta.tiempo}" class="pregunta-formulario-control" placeholder="Segundos para responder a la pregunta">
 		</div>
 		
 		<div class="form-group">
@@ -41,26 +41,38 @@
  
 		<div class="form-group">
 			<label for="categoria_id">Categoria:</label> <small class="form-text text-muted">* El campo se resetea al entrar al formulario</small>
-			<select class="custom-select" name="categoria_id"> <small class="form-text text-muted">* El campo se resetea al entrar al formulario</small>
+			<select class="custom-select" name="categoria_id" id="categoria_id"> <small class="form-text text-muted">* El campo se resetea al entrar al formulario</small>
 				<c:forEach items="${categorias}" var="c">
 					<option value="${c.id}" ${(c.id eq categoria.id) ? "selected" : ""}>${c.nombre}</option>
 				</c:forEach>					  					  
 			</select>
 		</div>
-
+		
+		<div class="form-group">
+			<label for="resp1id">Respuesta 1 ID:</label>
+			<input type="text" name="resp1id" id="resp1id" value="${pregunta.respuestas[0].id}" readonly class="pregunta-formulario-control">
+		</div>
 		<div class="form-group">
 			<label for="resp1">Respuesta 1:</label>
 			<input type="text" name="resp1" value="${pregunta.respuestas[0].nombre}" class="pregunta-formulario-control" placeholder="Respuesta 1">
 		</div>
-
+		
+		<div class="form-group">
+			<label for="resp2id">Respuesta 2 ID:</label>
+			<input type="text" name="resp2id" id="resp2id" value="${pregunta.respuestas[1].id}" readonly class="pregunta-formulario-control">
+		</div>
 		<div class="form-group">
 			<label for="resp2">Respuesta 2:</label>
 			<input type="text" name="resp2" value="${pregunta.respuestas[1].nombre}" class="pregunta-formulario-control" placeholder="Respuesta 2">
 		</div>
 
-		
+		<div class="form-group">
+			<label for="resp3id">Respuesta 3 ID:</label>
+			<input type="text" name="resp3id" id="resp13id" value="${pregunta.respuestas[2].id}" readonly class="pregunta-formulario-control">
+		</div>
 		<div class="form-group">
 			<label for="resp2">Respuesta 3:</label>
+			<input type="text" name="resp3id" id="resp13id" value="${pregunta.respuestas[2].id}" readonly class="pregunta-formulario-control">
 			<input type="text" name="resp3" value="${pregunta.respuestas[2].nombre}" class="pregunta-formulario-control" placeholder="Respuesta 3">
 		</div>
 		
@@ -75,7 +87,7 @@
 		
 		<div class="form-group">
 			<label for="comentario">Comentario:</label>
-			<input type="text" name="comentario" value="${pregunta.comentario}" placeholder="Comentario sobre la respuesta correcta">
+			<input type="text" name="comentario" id="comentario" value="${pregunta.comentario}" placeholder="Comentario sobre la respuesta correcta">
 		</div>
 		
 		<input type="submit" value="Guardar" class="btn btn-primary btn-block">

@@ -10264,14 +10264,27 @@ body {
 /* Custom Styles
 **********************************************************************/
 
-.big-number {
-	font-size: 4.5rem;
-	position: absolute;
-	bottom: 1.5rem;
-	right: 0.5rem;
+html {
+	height: 100%;
 }
 
-table img {
-	width: 100px;
-	height: 100px;
+main[role="main"] {
+    margin-top: 4rem;
+    min-height: 80vh;
+}
+
+.row-card {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.row-card .card {
+	width: 24%;
+	margin-right: 0.5%;
+	margin-bottom: 0.5%;
+	box-sizing: content-box;
+}
+
+.footer {
+    height: 155px;
 }

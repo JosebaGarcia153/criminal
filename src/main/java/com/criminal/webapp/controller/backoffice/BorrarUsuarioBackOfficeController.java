@@ -19,11 +19,11 @@ import com.criminal.webapp.modelo.pojo.Pregunta;
 * El metodo GET se encarga de indicar a la implementación DAO cual es la ID de la pregunta a borrar.
 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 */
-@WebServlet("/views/backoffice/borrar")
-public class BorrarPreguntaBackOfficeController extends HttpServlet {
+@WebServlet("/views/backoffice/borrar-usuario")
+public class BorrarUsuarioBackOfficeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger LOG = Logger.getLogger(BorrarPreguntaBackOfficeController.class);
+	private static final Logger LOG = Logger.getLogger(BorrarUsuarioBackOfficeController.class);
 	private static final PreguntaDAOImpl  dao = PreguntaDAOImpl.getInstance();
 
 	/**
