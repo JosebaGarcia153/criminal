@@ -53,6 +53,11 @@
 					</c:forEach>
 					<td>${p.comentario}</td>
 					<td>
+						<c:if test="${empty p.fecha_aprobada}">
+						<a href="views/backoffice/validar?id=${p.id}" class="mr-4">
+							<i class="fas fa-check fa-2x" title="Validar Pregunta"></i>
+						</a>
+						</c:if>
 						<a href="views/backoffice/agregar-pregunta?id=${p.id}" class="mr-4">
 							<i class="far fa-edit fa-2x" title="Editar Pregunta"></i>
 						</a>

@@ -124,6 +124,8 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 										+ " FROM preguntas p, respuestas r, categorias c"
 										+ " WHERE p.categoria_id = c.id AND r.pregunta_id = p.id AND p.id = ?; ";
 	
+	private final String SQL_VALIDATE = "UPDATE preguntas SET fecha_aprobada = NOW() WHERE id = ?; ";
+	
 	@Override
 	public ArrayList<Pregunta> conseguirTodas() {
 		
@@ -819,6 +821,10 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 
 			pst.executeUpdate();
 			LOG.debug(pst);
+			
+		} catch (Exception e) {
+			
+			throw new SecurityException();
 		}//try
 		
 		return pregunta;
@@ -910,6 +916,32 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 	}
 	
 	
+	@Override
+	public void validar(int id) throws Exception {
+		
+		try ( 
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_VALIDATE);
+			){
+			
+			pst.setInt(1, id);
+			
+			int affectedRows = pst.executeUpdate();
+			
+			LOG.debug(pst);
+			if (affectedRows != 1) {
+				
+				throw new Exception ("No se pudo validar la pregunta con ID: " + id);
+			}
+			
+		} catch (SQLException e) {
+			
+			LOG.error(e);
+			throw new SQLException("Ha habido un error");
+		}
+	}
+	
+	
 	private Pregunta mapper( ResultSet rs ) throws SQLException {
 		
 		Pregunta p = new Pregunta();
@@ -934,6 +966,8 @@ public class PreguntaDAOImpl implements PreguntaDAO{
 		return p;
 	}
 
+	
+	
 	@Override
 	public Pregunta borrar(int id, int usuarioId) throws Exception, SecurityException {
 		return null;

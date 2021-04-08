@@ -1,6 +1,5 @@
 package com.criminal.webapp.modelo.dao.impl;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +14,7 @@ import com.criminal.webapp.modelo.dao.SecurityException;
 import com.criminal.webapp.modelo.ConnectionManager;
 import com.criminal.webapp.modelo.pojo.Categoria;
 import com.criminal.webapp.modelo.pojo.Pregunta;
+
 
 public class CategoriaDAOImpl implements CategoriaDAO{
 	
@@ -49,12 +49,14 @@ public class CategoriaDAOImpl implements CategoriaDAO{
 													+ " WHERE p.categoria_id = c.id"
 													+ " AND fecha_aprobada IS NOT NULL " //filtramos por la aprobacion
 													+ " ORDER BY c.nombre ASC; ";
-	
-//	private final String SQL_READ_BY_ID = "SELECT id, name FROM categories WHERE id = ? LIMIT 500; ";
 
-//	private final String SQL_CREATE = "INSERT INTO categories (name) VALUES (?); ";
-//	private final String SQL_UPDATE = "UPDATE categories SET name = ? WHERE id = ?; ";
-//	private final String SQL_DELETE = "DELETE FROM categories WHERE id = ?; ";
+	private final String SQL_CREATE = "INSERT INTO categorias (nombre) VALUES (?); ";
+	
+	private final String SQL_UPDATE = "UPDATE categorias SET nombre = ? WHERE id = ?; ";
+	
+	private final String SQL_DELETE = "DELETE FROM categorias WHERE id = ?; ";
+	
+	private final String SQL_GET_BY_ID = "SELECT id, nombre FROM categorias WHERE id = ?; ";
 	
 	
 	@Override
@@ -64,12 +66,11 @@ public class CategoriaDAOImpl implements CategoriaDAO{
 
 		try(
 			Connection connection = ConnectionManager.getConnection();
-			//PreparedStatement pst = connection.prepareStatement(SQL_GET_ALL);
-			CallableStatement cs = connection.prepareCall(SQL_GET_ALL);
-			ResultSet rs = cs.executeQuery();
+			PreparedStatement pst = connection.prepareStatement(SQL_GET_ALL);
+			ResultSet rs = pst.executeQuery();
 			){
 			
-			LOG.debug(cs);
+			LOG.debug(pst);
 			while( rs.next() ) {
 				categorias.add(mapper(rs));					
 			}
@@ -180,23 +181,129 @@ public class CategoriaDAOImpl implements CategoriaDAO{
 
 	
 	@Override
-	public Categoria crear(Categoria pojo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Categoria crear(Categoria categoria) throws Exception {
+		
+		if (categoria.getNombre() == null) {
 
+			throw new Exception("Tienes que insertar un nombre");
+		}
+		
+		try ( 
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_CREATE, PreparedStatement.RETURN_GENERATED_KEYS);
+			
+			){
+			
+			pst.setString(1, categoria.getNombre());
+
+			
+			int affectedRows = pst.executeUpdate();
+			
+			LOG.debug(pst);
+			if (affectedRows == 1) {
+				
+				//conseguir el ID
+				try ( ResultSet rsKeys = pst.getGeneratedKeys(); ) {
+					
+					if (rsKeys.next()) {
+
+						categoria.setId(rsKeys.getInt(1));
+					}
+				}//try2
+			} else {
+
+				throw new Exception ("No se ha podido agregar " + categoria.getNombre());
+			}//if
+			
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new SQLException("La categoria ya existe");
+		}//try
+		
+		return categoria;
+	}
+	
 	
 	@Override
-	public Categoria actualizar(Categoria pojo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Categoria actualizar(Categoria categoria) throws Exception {
+		
+		if (categoria.getNombre() == null) {
+			
+			throw new Exception("Tienes que insertar un nombre");
+		}
+		
+		try ( 
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_UPDATE);
+			){
+			
+			pst.setString(1,categoria.getNombre());				
+			pst.setInt(2, categoria.getId());
+			
+			LOG.debug(pst);
+			int affectedRows = pst.executeUpdate();
+			
+			if (affectedRows != 1) {				
+				throw new Exception ("No se ha podido actualizar: " + categoria.getNombre());
+			}		
+		} catch (SQLException e) {	
+			LOG.error(e);
+			throw new SQLException("La categoria ya existe");
+		} 
+		return categoria;
 	}
 
 	
 	@Override
 	public Categoria borrar(int id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Categoria categoria = null;
+		
+		try (	
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_DELETE);
+			){
+			
+			pst.setInt(1, id);
+			
+			LOG.debug(pst);
+				pst.executeUpdate();
+
+			} catch (Exception e) {
+				throw new SecurityException();
+			}
+		
+		return categoria;
+	}
+	
+	
+	@Override
+	public Categoria conseguirPorId(int id) throws Exception {
+		
+		Categoria categoria = new Categoria();
+
+		try (
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_GET_BY_ID);
+			){
+
+			pst.setInt(1, id);
+			
+			try ( ResultSet rs = pst.executeQuery() ){
+				
+				LOG.debug(pst);
+				while (rs.next()) {
+
+					categoria = mapper(rs);
+				}
+				
+			} catch (Exception e) {
+
+				throw new SecurityException();
+			}//try2
+		} //try1
+		
+		return categoria;
 	}
 	
 	
@@ -210,6 +317,8 @@ public class CategoriaDAOImpl implements CategoriaDAO{
 		return c;
 	}
 
+	
+	
 	@Override
 	public Categoria borrar(int id, int usuarioId) throws Exception, SecurityException {
 		// TODO Auto-generated method stub

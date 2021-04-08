@@ -53,8 +53,8 @@ public class BorrarCategoriaBackOfficeController extends HttpServlet {
 			
 		} finally {
 			
-			//Volver al panel del usuario
-			String url = "inicio";
+			//Volver a la lista de categorias
+			String url = "mostrar-categorias";
 			LOG.debug("forward: " + url);
 			session.setAttribute("alert", alert);
 			request.getRequestDispatcher(url).forward(request, response);

@@ -71,8 +71,7 @@
 			<input type="text" name="resp3id" id="resp13id" value="${pregunta.respuestas[2].id}" readonly class="pregunta-formulario-control">
 		</div>
 		<div class="form-group">
-			<label for="resp2">Respuesta 3:</label>
-			<input type="text" name="resp3id" id="resp13id" value="${pregunta.respuestas[2].id}" readonly class="pregunta-formulario-control">
+			<label for="resp3">Respuesta 3:</label>
 			<input type="text" name="resp3" value="${pregunta.respuestas[2].nombre}" class="pregunta-formulario-control" placeholder="Respuesta 3">
 		</div>
 		

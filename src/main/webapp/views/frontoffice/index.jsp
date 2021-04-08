@@ -55,6 +55,6 @@
 	</br>
 	<a href="views/frontoffice/preguntas?total=1">Ver todas las preguntas aprobadas</a>
 	</br>
-	<a href="views/frontoffice/mostrar-categorias?categoriaId=-1">Ver todas las preguntas aprobadas por categoria</a>
+	<a href="views/frontoffice/mostrar-por-categorias?categoriaId=-1">Ver todas las preguntas aprobadas por categoria</a>
 
 <jsp:include page="../../include/office-footer.jsp" />

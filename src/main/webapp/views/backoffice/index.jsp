@@ -55,6 +55,6 @@
 	</br>
 	<a href="views/backoffice/preguntas?total=1">Ver todas las preguntas</a>
 	</br>
-	<a href="views/backoffice/mostrar-categorias?categoriaId=-1">Ver todas las preguntas por categoria</a>
+	<a href="views/backoffice/mostrar-por-categorias?categoriaId=-1">Ver todas las preguntas por categoria</a>
 
 <jsp:include page="../../include/office-footer.jsp" />

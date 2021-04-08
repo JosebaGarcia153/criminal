@@ -33,13 +33,18 @@
                                 <div class="sb-nav-link-icon"><i class="fa fa-plus-circle"></i></div>
                                 Agregar Pregunta
                             </a>
-                            <a class="nav-link" href="views/backoffice/tabla-categorias">
-                                <div class="sb-nav-link-icon"><i class="fas fa-wrench"></i></div>
-                                Editar Categorias
+                            
+                            <a class="nav-link" href="views/backoffice/agregar-categoria">
+                                <div class="sb-nav-link-icon"><i class="fa fa-plus-circle"></i></div>
+                                Agregar Categoria
                             </a>
-                            <a class="nav-link" href="views/backoffice/tabla-usuarios">
+                            <a class="nav-link" href="views/backoffice/mostrar-categorias">
+                                <div class="sb-nav-link-icon"><i class="fas fa-wrench"></i></div>
+                                Lista Categorias
+                            </a>
+                            <a class="nav-link" href="views/backoffice/mostrar-usuarios">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-                                Editar Usuarios
+                                Lista Usuarios
                             </a>
                                                    
                          </div>   

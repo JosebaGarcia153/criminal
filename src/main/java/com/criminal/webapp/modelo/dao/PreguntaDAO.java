@@ -144,4 +144,12 @@ public interface PreguntaDAO extends Crudable<Pregunta> {
 	 * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
 	 */
 	public Pregunta conseguirPorId(int id) throws Exception;
+	
+	/**
+	 * Un administrador valida una pregunta en la BBDD
+	 * @param id ID de la pregunta a validar
+	 * @throws Exception Si la ID de la pregunta no esta en la BBDD
+	 * @see com.games.webapp.modelo.dao.impl.GameDAOImpl
+	 */
+	public void validar(int id) throws Exception;
 }

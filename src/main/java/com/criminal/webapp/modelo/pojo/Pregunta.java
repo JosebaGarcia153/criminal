@@ -3,6 +3,9 @@ package com.criminal.webapp.modelo.pojo;
 import java.util.ArrayList;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 
@@ -32,6 +35,9 @@ public class Pregunta {
 	private String nombre;
 	
 	private int dificultad;
+	
+	@NotNull(message = "El tiempo no puede estar vacío")
+	@Min(value = 1, message = "El tiempo tiene que ser 1 minuto o más")
 	private int tiempo;
 	
 	@NotEmpty(message = "El comentario no puede estar vacío")

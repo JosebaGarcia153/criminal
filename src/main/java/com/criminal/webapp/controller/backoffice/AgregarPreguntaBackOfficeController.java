@@ -30,7 +30,7 @@ import com.criminal.webapp.modelo.pojo.Usuario;
 /**
  * Controlador para usuarios comunes para el formulario de juegos.
  * El metodo GET se encarga de entrar al formulario por primera vez y guardar los datos y seguir mostrándolos en el formulario en el caso de que halla habido algún error al enviarlos.
- * El metodo POST se encarga de recibir los datos del formularios y enviarlos a la implementación DAO donde se realizarán las llamadas SQL.
+ * El metodo POST se encarga de recibir los datos del formulario y enviarlos a la implementación DAO donde se realizarán las llamadas SQL.
  * @see com.criminal.webapp.modelo.dao.impl.PreguntaDAOImpl
  */
 @WebServlet("/views/backoffice/agregar-pregunta")
@@ -96,6 +96,7 @@ public class AgregarPreguntaBackOfficeController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String titulo = "";
+		String url = "";
 		
 		HttpSession session = request.getSession();
 		
@@ -137,9 +138,18 @@ public class AgregarPreguntaBackOfficeController extends HttpServlet {
 			int dificultad = Integer.parseInt(dificultadParam);
 			int tiempo = Integer.parseInt(tiempoParam);
 			int respuesta_correcta = Integer.parseInt(respuesta_correctaParam);
-			int respuesta1id = Integer.parseInt(respuesta1idParam);
-			int respuesta2id = Integer.parseInt(respuesta2idParam);
-			int respuesta3id = Integer.parseInt(respuesta3idParam);
+			
+			int respuesta1id = 0;
+			int respuesta2id = 0;
+			int respuesta3id = 0;
+			
+			if (id != 0) {
+				
+				respuesta1id = Integer.parseInt(respuesta1idParam);
+				respuesta2id = Integer.parseInt(respuesta2idParam);
+				respuesta3id = Integer.parseInt(respuesta3idParam);
+			}
+			
 			
 			
 			//Crear objeto con esos parametros			
@@ -161,9 +171,11 @@ public class AgregarPreguntaBackOfficeController extends HttpServlet {
 			Respuesta respuesta2 = new Respuesta();
 			Respuesta respuesta3 = new Respuesta();
 			
-			respuesta1.setId(respuesta1id);
-			respuesta2.setId(respuesta2id);
-			respuesta3.setId(respuesta3id);
+			if (id != 0) {
+				respuesta1.setId(respuesta1id);
+				respuesta2.setId(respuesta2id);
+				respuesta3.setId(respuesta3id);
+			}
 			respuesta1.setNombre(respuesta1nombre);
 			respuesta2.setNombre(respuesta2nombre);
 			respuesta3.setNombre(respuesta3nombre);
@@ -209,12 +221,14 @@ public class AgregarPreguntaBackOfficeController extends HttpServlet {
 					dao.crear(pregunta);
 					alert = new Alert ("success", "Pregunta añadida. Dentro de poco será revisada para aprobarla");
 					request.setAttribute("titulo", titulo);
+					url = "inicio";
 				
 				} else {
 					
 					dao.actualizarPorAdmin(pregunta);
 					alert = new Alert ("success", "Pregunta actualizada. Pendiente de aprobación");
 					request.setAttribute("titulo", titulo);
+					url = "formulario.jsp";
 				}
 				
 			} else {
@@ -231,6 +245,7 @@ public class AgregarPreguntaBackOfficeController extends HttpServlet {
 			
 			LOG.error(e);
 			alert = new Alert("warning", "Una pregunta idéntica ya esta registrada");
+			url = "formulario.jsp";
 		
 		} finally {
 			
@@ -239,8 +254,7 @@ public class AgregarPreguntaBackOfficeController extends HttpServlet {
 			request.setAttribute("pregunta", pregunta);
 			request.setAttribute("categorias", categorias);
 			request.setAttribute("titulo", titulo);
-			
-			String url = "formulario.jsp";
+
 			LOG.debug("forward: " + url);
 			
 			request.getRequestDispatcher(url).forward(request, response);

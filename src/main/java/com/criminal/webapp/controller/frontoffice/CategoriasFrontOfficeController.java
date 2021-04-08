@@ -21,7 +21,7 @@ import com.criminal.webapp.modelo.pojo.Pregunta;
  * El metodo GET se encarga de mostrar todas las preguntas ordenadas por la categoria seleccionada
  * @see com.criminal.webapp.modelo.dao.impl.CategoriaDAOImpl
  */
-@WebServlet("/views/frontoffice/mostrar-categorias")
+@WebServlet("/views/frontoffice/mostrar-por-categorias")
 public class CategoriasFrontOfficeController extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -98,7 +98,7 @@ public class CategoriasFrontOfficeController extends HttpServlet {
 			
 			String url = "categorias.jsp";
 			LOG.debug("forward: " + url);
-			//response.sendRedirect("categorias.jsp");
+			
 			request.getRequestDispatcher(url).forward(request, response);
 		}
 	}

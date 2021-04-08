@@ -24,7 +24,7 @@
 					<td>${u.password}</td>
 					<td>${u.rol.nombre}</td>
 					<td>
-						<a href="views/backoffice/agregar-usuario?id=${u.id}" class="mr-4">
+						<a href="views/backoffice/editar-usuario?id=${u.id}" class="mr-4">
 							<i class="far fa-edit fa-2x" title="Editar Usuario"></i>
 						</a>
 						<a href="views/backoffice/borrar-usuario?id=${u.id}" onclick="confirmar('${u.nombre}')">

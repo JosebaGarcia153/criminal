@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import com.criminal.webapp.modelo.dao.SecurityException;
 import com.criminal.webapp.modelo.dao.UsuarioDAO;
 import com.criminal.webapp.modelo.pojo.Usuario;
 import com.criminal.webapp.modelo.pojo.Rol;
@@ -30,13 +32,42 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 		return instance;
 	}
 	
+	private final String SQL_GET_ALL = "SELECT u.id, u.nombre, password, r.id, r.nombre FROM usuarios u, rol r WHERE rol_id = r.id ORDER BY u.nombre ASC; ";
 	
 	private final String SQL_EXISTS = "SELECT u.id, u.nombre, password, r.id, r.nombre FROM usuarios u, rol r WHERE u.nombre = ? AND password = MD5(?) AND rol_id = r.id; ";
 	
 	private final String SQL_CREATE = "INSERT INTO usuarios (nombre, password, rol_id) VALUES (?, MD5(?), 1); ";
 	
+	private final String SQL_UPDATE = "UPDATE usuarios SET nombre = ?, password = MD5(?), rol_id = ?  WHERE id = ?; ";
+	
+	private final String SQL_DELETE = "DELETE FROM usuarios WHERE id = ?; ";
+	
 	private final String SQL_FIND = "SELECT nombre from usuarios WHERE nombre = ?; ";
 	
+	private final String SQL_GET_BY_ID = "SELECT u.id, u.nombre, password, r.id, r.nombre FROM usuarios u, rol r WHERE rol_id = r.id AND u.id = ?; ";
+	
+	@Override
+	public ArrayList<Usuario> conseguirTodos() {
+		
+		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+		
+		try(
+				Connection connection = ConnectionManager.getConnection();
+				PreparedStatement pst = connection.prepareStatement(SQL_GET_ALL);
+				ResultSet rs = pst.executeQuery();
+				){
+				
+				LOG.debug(pst);
+				while( rs.next() ) {
+					usuarios.add(mapper(rs));					
+				}
+					
+			} catch (Exception e) {
+				LOG.error(e);
+			}
+		
+			return usuarios;
+	}
 	
 	@Override
 	public Usuario existe(String nombre, String password) {
@@ -133,6 +164,88 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 		return check;
 	}
 	
+	@Override
+	public Usuario actualizar(Usuario usuario) throws Exception {
+		
+		if (usuario.getNombre() == null) {
+			
+			throw new Exception("Tienes que insertar un nombre");
+		}
+		
+		try ( 
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_UPDATE);
+			){
+			
+			pst.setString(1,usuario.getNombre());
+			pst.setString(2, usuario.getPassword());
+			pst.setInt(3, usuario.getRol().getId());
+			pst.setInt(4, usuario.getId());
+			
+			LOG.debug(pst);
+			int affectedRows = pst.executeUpdate();
+			
+			if (affectedRows != 1) {				
+				throw new Exception ("No se ha podido actualizar: " + usuario.getNombre());
+			}		
+		} catch (SQLException e) {	
+			LOG.error(e);
+			throw new SQLException("El usuario ya existe");
+		} 
+		return usuario;
+	}
+
+	
+	@Override
+	public Usuario borrar(int id) throws Exception {
+		
+		Usuario usuario = null;
+		
+		try (	
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_DELETE);
+			){
+			
+			pst.setInt(1, id);
+			
+			LOG.debug(pst);
+				pst.executeUpdate();
+
+			} catch (Exception e) {
+				throw new SecurityException();
+			}
+		
+		return usuario;
+	}
+	
+	@Override
+	public Usuario conseguirPorId(int id) throws Exception {
+		
+		Usuario usuario = new Usuario();
+
+		try (
+			Connection connection = ConnectionManager.getConnection();
+			PreparedStatement pst = connection.prepareStatement(SQL_GET_BY_ID);
+			){
+
+			pst.setInt(1, id);
+			
+			try ( ResultSet rs = pst.executeQuery() ){
+				
+				LOG.debug(pst);
+				while (rs.next()) {
+
+					usuario = mapper(rs);
+				}
+				
+			} catch (Exception e) {
+
+				throw new SecurityException();
+			}//try2
+		} //try1
+		
+		return usuario;
+	}
 	
 	private Usuario mapper( ResultSet rs ) throws SQLException {
 		
