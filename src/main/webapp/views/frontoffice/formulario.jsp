@@ -76,7 +76,7 @@
 			<input type="text" name="resp3" value="${pregunta.respuestas[2].nombre}" class="pregunta-formulario-control" placeholder="Respuesta 3">
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group"> <small class="form-text text-muted">* El campo se resetea al entrar al formulario</small>
 			<label for="respuesta_correcta">Respuesta Correcta:</label>
 			<select class="custom-select" name="respuesta_correcta">
 				<option value="1">1</option>

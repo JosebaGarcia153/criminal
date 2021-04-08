@@ -84,7 +84,7 @@
 			</select>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group"> <small class="form-text text-muted">* El campo se resetea al entrar al formulario</small>
 			<label for="comentario">Comentario:</label>
 			<input type="text" name="comentario" id="comentario" value="${pregunta.comentario}" placeholder="Comentario sobre la respuesta correcta">
 		</div>
