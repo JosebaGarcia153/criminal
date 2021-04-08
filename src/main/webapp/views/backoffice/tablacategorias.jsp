@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
 
-<jsp:include page="../../include/frontoffice-header.jsp" />
-<jsp:include page="../../include/frontoffice-navbar.jsp" />
+<jsp:include page="../../include/backoffice-header.jsp" />
+<jsp:include page="../../include/backoffice-navbar.jsp" />
 
 <h2 class="mt-2">${titulo}</h2>
 	
@@ -11,9 +11,9 @@
 			Categorias
 		</a>
 		<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-		    <a class="dropdown-item" href="views/frontoffice/mostrar-por-categorias?categoriaId=-1">Todas</a>
+		    <a class="dropdown-item" href="views/backoffice/mostrar-por-categorias?categoriaId=-1">Todas</a>
 			<c:forEach items="${lista_categorias}" var="c">
-				<a class="dropdown-item" href="views/frontoffice/mostrar-por-categorias?categoriaId=${c.id}&categoriaNombre=${c.nombre}">${c.nombre}</a>	
+				<a class="dropdown-item" href="views/backoffice/mostrar-por-categorias?categoriaId=${c.id}&categoriaNombre=${c.nombre}">${c.nombre}</a>	
 			</c:forEach>
 		</div>
 	</div> 
@@ -71,7 +71,7 @@
 					<div class="card">
 						<div class="card-body">
 							<h4>${p.nombre}</h4>
-							<a href="views/frontoffice/mostrar-por-categorias?preguntaId=${p.id}">Ver detalles</a>
+							<a href="views/backoffice/mostrar-por-categorias?preguntaId=${p.id}">Ver detalles</a>
 						</div>
 					</div>
 				</c:forEach>
@@ -85,7 +85,7 @@
 				<div class="card">
 					<div class="card-body">
 						<h4>${p.nombre}</h4>
-						<a href="views/frontoffice/mostrar-por-categorias?preguntaId=${p.id}">Ver detalles</a>
+						<a href="views/backoffice/mostrar-por-categorias?preguntaId=${p.id}">Ver detalles</a>
 					</div>
 				</div>
 			</div>

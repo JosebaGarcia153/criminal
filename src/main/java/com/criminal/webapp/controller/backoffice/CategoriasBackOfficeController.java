@@ -96,7 +96,7 @@ public class CategoriasBackOfficeController extends HttpServlet {
 			
 			request.setAttribute("titulo", titulo);
 			
-			String url = "categorias.jsp";
+			String url = "tablacategorias.jsp";
 			LOG.debug("forward: " + url);
 
 			request.getRequestDispatcher(url).forward(request, response);
